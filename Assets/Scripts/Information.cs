@@ -1,22 +1,25 @@
-﻿using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class Information : MonoBehaviour {
-  public static List<Information> InfoList = new List<Information>();
-  public string uniqueName;
-  
-
   private TextMeshProUGUI tmp;
-  private void Awake() {
-    tmp = GetComponent<TextMeshProUGUI>();
-    InfoList.Add(this);
-  }
-
-  public static void SetText(string name, string text) {
-    foreach (var info in InfoList.FindAll(x => x.uniqueName == name)) {
-      info.tmp.SetText(text);
+  private string text;
+  public string Text {
+    get => text;
+    set {
+      text = value;
+      tmp.SetText(value);
     }
   }
+  
+  private void Awake() {
+    tmp = GetComponent<TextMeshProUGUI>();
+  }
+
+  public void SetText(string text) => Text = text;
+
+  public string GetText() => Text;
+  
+
 }

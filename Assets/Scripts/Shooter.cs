@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
 public class Shooter : MonoBehaviour {
@@ -9,12 +10,19 @@ public class Shooter : MonoBehaviour {
   public GameObject bullet;
   public Transform singleFirePosition;
   public Transform autoFirePosition;
-  public Object singleFireSprite;
-  public Object autoFireSprite;
+  public Sprite singleFireSprite;
+  public Sprite autoFireSprite;
   public GameObject weaponObject;
   public int maxSingleFireAmmo = 8;
   public int maxAutoFireAmmo = 24;
   public int reloadTime = 60;
+  public int maxHp = 100;
+
+  public Information leftAmmoInfo;
+  public Information hpInfo;
+  public Information modeInfo;
+  public Progressbar leftAmmoPrg;
+  public Progressbar hpPrg;
 
   private ShootingMode mode;
   private int leftAmmoCount;
@@ -23,11 +31,16 @@ public class Shooter : MonoBehaviour {
   private int frameAuto = 0;
   private const int AutoFireFrame = 30;
   private int tempAmmo;
+  private int hp;
+
+  private SpriteRenderer weaponSr;
 
   private void Awake() {
     mode = ShootingMode.Single;
     leftAmmoCount = maxSingleFireAmmo;
     tempAmmo = maxAutoFireAmmo;
+    hp = maxHp;
+    weaponSr = weaponObject.GetComponent<SpriteRenderer>();
   }
 
   private void Update() {
@@ -44,7 +57,8 @@ public class Shooter : MonoBehaviour {
         }
 
         break;
-
+      
+      default:
       case ShootingMode.Single:
         if (Input.GetKeyDown(shootKey)) Fire();
         break;
@@ -56,8 +70,8 @@ public class Shooter : MonoBehaviour {
       tmp = leftAmmoCount;
       leftAmmoCount = tempAmmo;
       tempAmmo = tmp;
-      weaponObject.GetComponent<SpriteRenderer>().sprite =
-        (Sprite)(mode == ShootingMode.Single ? singleFireSprite : autoFireSprite);
+      weaponSr.sprite =
+        (mode == ShootingMode.Single ? singleFireSprite : autoFireSprite);
 
     }
 
@@ -95,9 +109,19 @@ public class Shooter : MonoBehaviour {
   private int GetMaxAmmo() => mode == ShootingMode.Single ? maxSingleFireAmmo : maxAutoFireAmmo;
 
   private void RefreshInformation() {
-    Information.SetText("left_ammo", $"ammo: {leftAmmoCount}/{GetMaxAmmo()}{(isReloading ? " (reloading)" : "")}");
-    Information.SetText("mode", $"mode: {(mode == ShootingMode.Single ? "single" : "auto")}");
-    Progressbar.SetValue("left_ammo_progress", leftAmmoCount);
-    Progressbar.SetMaxValue("left_ammo_progress", GetMaxAmmo());
+    leftAmmoInfo.SetText($"ammo: {leftAmmoCount}/{GetMaxAmmo()}{(isReloading ? " (reloading)" : "")}");
+    modeInfo.SetText($"mode: {(mode == ShootingMode.Single ? "single" : "auto")}");
+    leftAmmoPrg.SetMaxValue(GetMaxAmmo());
+    leftAmmoPrg.SetValue(leftAmmoCount);
+
+    hpInfo.SetText($"hp: {hp}/{maxHp}");
+    hpPrg.SetMaxValue(maxHp);
+    hpPrg.SetValue(hp);
+  }
+
+  private void OnCollisionEnter(Collision collision) {
+    if (collision.gameObject.CompareTag($"Enemy")) {
+      hp--;
+    }
   }
 }
