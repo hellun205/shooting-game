@@ -24,6 +24,7 @@ public class Shooter : MonoBehaviour {
   public Progressbar leftAmmoPrg;
   public Progressbar hpPrg;
   public Information scoreInfo;
+  public GameObject gameOverPanel;
 
   public static int score;
 
@@ -92,6 +93,11 @@ public class Shooter : MonoBehaviour {
       }
 
       frame++;
+    }
+
+    if (hp <= 0) {
+      Utils.Pause();
+      gameOverPanel.SetActive(true);
     }
 
     RefreshInformation();

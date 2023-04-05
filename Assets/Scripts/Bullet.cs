@@ -20,9 +20,9 @@ public class Bullet : MonoBehaviour {
 
     if (frame >= despawnTime) {
       Destroy(gameObject);
-    }
+    } 
 
-    frame++;
+    if (!Utils.IsPause) frame++;
   }
 
   private void OnTriggerEnter2D(Collider2D col) {

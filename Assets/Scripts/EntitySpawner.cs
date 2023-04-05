@@ -11,6 +11,6 @@ public class EntitySpawner : MonoBehaviour {
       Instantiate(target, transform.position, transform.rotation);
     }
 
-    frame++;
+    if (!Utils.IsPause) frame++;
   }
 }
