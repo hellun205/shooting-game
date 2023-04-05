@@ -6,6 +6,8 @@ public class Enemy : MonoBehaviour {
   public int maxHp = 5;
   private int hp;
   private Rigidbody2D rb;
+  
+  
 
   private void Awake() {
     rb = GetComponent<Rigidbody2D>();
@@ -13,20 +15,23 @@ public class Enemy : MonoBehaviour {
   }
 
   private void Update() {
-    rb.AddForce(Vector2.left * 0.8f);
-    if (hp <= 0) {
+    rb.AddForce(Vector2.left * 0.75f);
+
+    if (hp <= 0 || transform.position.y < -50) {
       Destroy(gameObject);
+      Shooter.score += hp <= 0 ? 1 : -1;
     }
-    
   }
 
   public void Hit() {
     hp--;
   }
-  
+
 
   private void OnCollisionEnter2D(Collision2D col) {
-    rb.AddForce(Vector2.right * 5f);
+    if (col.gameObject.CompareTag("Player")) {
+      rb.AddForce(Vector2.right * 500f);
+      Hit();
+    }
   }
-  
 }

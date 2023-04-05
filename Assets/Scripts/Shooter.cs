@@ -23,6 +23,9 @@ public class Shooter : MonoBehaviour {
   public Information modeInfo;
   public Progressbar leftAmmoPrg;
   public Progressbar hpPrg;
+  public Information scoreInfo;
+
+  public static int score;
 
   private ShootingMode mode;
   private int leftAmmoCount;
@@ -113,13 +116,14 @@ public class Shooter : MonoBehaviour {
     modeInfo.SetText($"mode: {(mode == ShootingMode.Single ? "single" : "auto")}");
     leftAmmoPrg.SetMaxValue(GetMaxAmmo());
     leftAmmoPrg.SetValue(leftAmmoCount);
+    scoreInfo.SetText($"{score} point");
 
     hpInfo.SetText($"hp: {hp}/{maxHp}");
     hpPrg.SetMaxValue(maxHp);
     hpPrg.SetValue(hp);
   }
 
-  private void OnCollisionEnter(Collision collision) {
+  private void OnCollisionEnter2D(Collision2D collision) {
     if (collision.gameObject.CompareTag($"Enemy")) {
       hp--;
     }
